@@ -219,3 +219,25 @@ Sometimes, it's useful to tell Apollo Client to bypass the cache altogether if y
 First, let's navigate to `src/pages/profile.js` and write our query.
 
 By default, Apollo Client's fetch policy is `cache-first`, which means it checks the cache to see if the result is there before making a network request. Since we want this list to always reflect the newest data from our graph API, we set the `fetchPolicy` for this `query` to `network-only`.
+
+## 7. Update data with mutations
+
+With Apollo Client, updating data from a graph API is as simple as calling a function. Additionally, the Apollo Client cache is smart enough to automatically update in most cases. In this section, we'll learn how to use the `useMutation` hook to login a user.
+
+The useMutation hook is another important building block in an Apollo app. It leverages React's Hooks API to provide a function to execute a GraphQL mutation. Additionally, it tracks the loading, completion, and error state of that mutation.
+
+Updating data with a useMutation hook from @apollo/react-hooks is very similar to fetching data with a useQuery hook. The main difference is that the first value in the useMutation result tuple is a mutate function that actually triggers the mutation when it is called. The second value in the result tuple is a result object that contains loading and error state, as well as the return value from the mutation.
+
+### Update data with useMutation
+
+Refer to `start/client/src/pages/login.js`
+
+### Expose Apollo Client with useApolloClient
+
+One of the main functions of React Apollo is that it puts your ApolloClient instance on React's context. Sometimes, we need to access the ApolloClient instance to directly call a method that isn't exposed by the @apollo/react-hooks helper components. The `useApolloClient` hook can help us access the client.
+
+Let's call `useApolloClient` to get the currently configured client instance. Next, we want to pass an `onCompleted` callback to `useMutation` that will be called once the mutation is complete with its return value. This callback is where we will save the login token to `localStorage`.
+
+In our `onCompleted` handler, we also call `client.writeData` to write local data to the Apollo cache indicating that the user is logged in. This is an example of a direct write that we'll explore further in the next section on local state management.
+
+Let's take a look at `start/client/src/pages/login.js`
