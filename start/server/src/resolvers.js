@@ -46,4 +46,16 @@ module.exports = {
 
     me: (_, __, { dataSources }) => dataSources.userAPI.findOrCreateUser(),
   },
+
+  /**
+   * You may have noticed that we haven't written resolvers for all our types, yet our queries still run successfully. GraphQL has default resolvers; therefore, we don't have to write a resolver for a field if the parent object has a property with the same name.
+   */
+  Mission: {
+    // make sure the default size is 'large' in case user doesn't specify
+    missionPatch: (mission, { size } = { size: 'LARGE' }) => {
+      return size === 'SMALL'
+        ? mission.missionPatchSmall
+        : mission.missionPatchLarge;
+    },
+  },
 };

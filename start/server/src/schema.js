@@ -49,7 +49,10 @@ const typeDefs = gql`
 
   type Mission {
     name: String
-    missionPatch(size: PatchSize): String
+
+    # The first argument passed into our resolver is the parent, which refers to the mission object.
+    # The second argument is the size we pass to our missionPatch field
+    missionPatch(mission: String, size: PatchSize): String
   }
 
   enum PatchSize {
