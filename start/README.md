@@ -70,3 +70,26 @@ query GetLaunchById($id: ID!) {
   }
 }
 ```
+
+### Paginated queries
+
+Running the launches query returned a large data set of launches, which can slow down our app. How can we ensure we're not fetching too much data at once?
+
+Pagination is a solution to this problem that ensures that the server only sends data in small chunks. Cursor-based pagination is our recommended approach over numbered pages, because it eliminates the possibility of skipping items and displaying the same item more than once. In cursor-based pagination, a constant pointer (or cursor) is used to keep track of where in the data set the next items should be fetched from.
+
+Notice we have a helper function `paginateResults` already defined for us in `start/server/src/utils.js`
+
+#### GraphQL queries
+
+```sh
+query GetLaunches {
+  launches(pageSize: 3) {
+    launches {
+      id
+      mission {
+        name
+      }
+    }
+  }
+}
+```
