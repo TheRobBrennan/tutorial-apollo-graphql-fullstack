@@ -272,4 +272,10 @@ Refer to `start/client/src/index.js` - Let's look at an example where we query t
 
 First, we create our IsUserLoggedIn local query by adding the @client directive to the isLoggedIn field. Then, we render a component with useQuery, pass our local query in, and based on the response render either a login screen or the homepage depending if the user is logged in. Since cache reads are synchronous, we don't have to account for any loading state.
 
-Let's look at another example of a component that queries local state in `src/pages/cart.js` - 
+Let's look at another example of a component that queries local state in `src/pages/cart.js`.
+
+### Adding virtual fields to server data
+
+One of the unique advantages of managing your local data with Apollo Client is that you can add virtual fields to data you receive back from your graph API. These fields only exist on the client and are useful for decorating server data with local state. In our example, we're going to add an `isInCart` virtual field to our `Launch` type.
+
+To add a virtual field, first extend the type of the data you're adding the field to in your client schema - as in `start/client/src/resolvers.js` - and then specify a client resolver on the Launch type to tell Apollo Client how to resolve your virtual field.
