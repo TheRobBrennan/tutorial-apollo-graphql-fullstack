@@ -11,3 +11,16 @@ This guide will contain useful command line snippets and tidbits as I work throu
 $ cd start/server && npm install
 
 ```
+
+## 2. Hook up your data sources
+
+Apollo makes connecting these services to your graph simple with our data source API. An Apollo data source is a class that encapsulates all of the data fetching logic, as well as caching and deduplication, for a particular service. By using Apollo data sources to hook up your services to your graph API, you're also following best practices for organizing your code.
+
+```sh
+# First, let's connect the Space-X v2 REST API to our graph
+$ npm install apollo-datasource-rest --save
+
+# To build a data source for a REST API, extend the RESTDataSource class and define this.baseURL
+# The Apollo RESTDataSource also sets up an in-memory cache that caches responses from our REST resources with no additional setup using partial query caching
+
+```
