@@ -191,3 +191,15 @@ Next, create an Apollo config file called `apollo.config.js` - this config file 
 ### Create an Apollo Client
 
 ### Connect your client to React
+
+## 6. Fetch data with queries
+
+To create a component with `useQuery`, import `useQuery` from `@apollo/react-hooks`, pass your query wrapped with `gql` in as the first parameter, then wire your component up to use the loading, data, and error properties on the result object to render UI in your app.
+
+Why are we wrapping our GraphQL query with `gql`? We need to wrap the query with the `gql` function in order to parse it into an AST.
+
+### Fetching a list
+
+Refer to `start/client/src/pages/launches.js` - notice how our `GET_LAUNCHES` query is defined. It contains both `cursor` and `hasMore` properties - as well as an object type with a list of launches.
+
+At this stage of our tutorial, note that we are only fetching the first twenty (20) launches from the list. To display the full list of launches, we need to build a pagination feature.
