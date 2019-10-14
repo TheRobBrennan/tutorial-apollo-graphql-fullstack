@@ -1,6 +1,7 @@
 const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./schema');
 const { createStore } = require('./utils');
+const resolvers = require('./resolvers');
 
 const LaunchAPI = require('./datasources/launch');
 const UserAPI = require('./datasources/user');
@@ -9,7 +10,12 @@ const UserAPI = require('./datasources/user');
 const store = createStore();
 
 const server = new ApolloServer({
+  // Our GraphQL schema
   typeDefs,
+
+  // Apollo Server will automatically add the launchAPI and userAPI to our resolvers' context so we can easily call them.
+  resolvers,
+
   // Add instantiated data sources to the dataSources property for our server
   dataSources: () => ({
     // Use the Space-X REST API
