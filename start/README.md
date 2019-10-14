@@ -103,3 +103,35 @@ Here are the steps you'll want to follow:
 1. The context function on your ApolloServer instance is called with the request object each time a GraphQL operation hits your API. Use this request object to read the authorization headers.
 2. Authenticate the user within the context function.
 3. Once the user is authenticated, attach the user to the object returned from the context function. This allows us to read the user's information from within our data sources and resolvers, so we can authorize whether they can access the data.
+
+#### GraphQL queries
+
+```sh
+mutation LoginUser {
+  login(email: "daisy@apollographql.com")
+}
+
+Returns
+{
+  "data": {
+    "login": "ZGFpc3lAYXBvbGxvZ3JhcGhxbC5jb20="
+  }
+}
+
+mutation BookTrips {
+  bookTrips(launchIds: [67, 68, 69]) {
+    success
+    message
+    launches {
+      id
+    }
+  }
+}
+
+Only authorized users can book trips, so open the `HTTP Headers` box at the bottom of your GraphQL playground and paste in the login code:
+{
+  "authorization": "ZGFpc3lAYXBvbGxvZ3JhcGhxbC5jb20="
+}
+
+You should see a message that your trips were booked successfully.
+```
