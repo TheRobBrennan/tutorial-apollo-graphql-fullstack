@@ -28,3 +28,110 @@ $ npm install apollo-datasource-rest --save
 # Connect our REST API and SQL database to our server at start/server/src/index.js
 
 ```
+
+## 3. Write your graph's resolvers
+
+Take a look at `start/server/src/resolvers.js` for how we implemented our resolvers.
+
+### GraphQL queries
+
+Start your server with `npm start` and navigate to [http://localhost:4000/](http://localhost:4000/) to explore the sample GraphQL queries:
+
+```sh
+# Get our launches
+query GetLaunches {
+  launches {
+    id
+    mission {
+      name
+    }
+  }
+}
+
+# Get launch details for a specific ID
+query GetLaunchById {
+  launch(id: 60) {
+    id
+    rocket {
+      id
+      type
+    }
+  }
+}
+
+# You can paste { "id": 60 } into the Query Variables section below before running your query.
+query GetLaunchById($id: ID!) {
+  launch(id: $id) {
+    id
+    rocket {
+      id
+      type
+    }
+  }
+}
+```
+
+### Paginated queries
+
+Running the launches query returned a large data set of launches, which can slow down our app. How can we ensure we're not fetching too much data at once?
+
+Pagination is a solution to this problem that ensures that the server only sends data in small chunks. Cursor-based pagination is our recommended approach over numbered pages, because it eliminates the possibility of skipping items and displaying the same item more than once. In cursor-based pagination, a constant pointer (or cursor) is used to keep track of where in the data set the next items should be fetched from.
+
+Notice we have a helper function `paginateResults` already defined for us in `start/server/src/utils.js`
+
+#### GraphQL queries
+
+```sh
+query GetLaunches {
+  launches(pageSize: 3) {
+    launches {
+      id
+      mission {
+        name
+      }
+    }
+  }
+}
+```
+
+### Authenticate users
+
+Access control is a feature that almost every app will have to handle at some point. In this tutorial, we're going to focus on teaching you the essential concepts of authenticating users instead of focusing on a specific implementation.
+
+Here are the steps you'll want to follow:
+
+1. The context function on your ApolloServer instance is called with the request object each time a GraphQL operation hits your API. Use this request object to read the authorization headers.
+2. Authenticate the user within the context function.
+3. Once the user is authenticated, attach the user to the object returned from the context function. This allows us to read the user's information from within our data sources and resolvers, so we can authorize whether they can access the data.
+
+#### GraphQL queries
+
+```sh
+mutation LoginUser {
+  login(email: "daisy@apollographql.com")
+}
+
+Returns
+{
+  "data": {
+    "login": "ZGFpc3lAYXBvbGxvZ3JhcGhxbC5jb20="
+  }
+}
+
+mutation BookTrips {
+  bookTrips(launchIds: [67, 68, 69]) {
+    success
+    message
+    launches {
+      id
+    }
+  }
+}
+
+Only authorized users can book trips, so open the `HTTP Headers` box at the bottom of your GraphQL playground and paste in the login code:
+{
+  "authorization": "ZGFpc3lAYXBvbGxvZ3JhcGhxbC5jb20="
+}
+
+You should see a message that your trips were booked successfully.
+```
