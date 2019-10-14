@@ -15,7 +15,7 @@ import { resolvers, typeDefs } from './resolvers';
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: 'http://localhost:4000',
   headers: {
     // Attach our login token to the authorization header
     authorization: localStorage.getItem('token'),

@@ -5,7 +5,6 @@ import gql from 'graphql-tag';
 import { Header, Loading } from '../components';
 import { CartItem, BookTrips } from '../containers';
 
-// Create our query to request the local state
 export const GET_CART_ITEMS = gql`
   query GetCartItems {
     cartItems @client
