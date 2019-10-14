@@ -28,3 +28,45 @@ $ npm install apollo-datasource-rest --save
 # Connect our REST API and SQL database to our server at start/server/src/index.js
 
 ```
+
+## 3. Write your graph's resolvers
+
+Take a look at `start/server/src/resolvers.js` for how we implemented our resolvers.
+
+### GraphQL queries
+
+Start your server with `npm start` and navigate to [http://localhost:4000/](http://localhost:4000/) to explore the sample GraphQL queries:
+
+```sh
+# Get our launches
+query GetLaunches {
+  launches {
+    id
+    mission {
+      name
+    }
+  }
+}
+
+# Get launch details for a specific ID
+query GetLaunchById {
+  launch(id: 60) {
+    id
+    rocket {
+      id
+      type
+    }
+  }
+}
+
+# You can paste { "id": 60 } into the Query Variables section below before running your query.
+query GetLaunchById($id: ID!) {
+  launch(id: $id) {
+    id
+    rocket {
+      id
+      type
+    }
+  }
+}
+```
