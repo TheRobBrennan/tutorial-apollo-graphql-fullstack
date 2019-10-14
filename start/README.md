@@ -93,3 +93,13 @@ query GetLaunches {
   }
 }
 ```
+
+### Authenticate users
+
+Access control is a feature that almost every app will have to handle at some point. In this tutorial, we're going to focus on teaching you the essential concepts of authenticating users instead of focusing on a specific implementation.
+
+Here are the steps you'll want to follow:
+
+1. The context function on your ApolloServer instance is called with the request object each time a GraphQL operation hits your API. Use this request object to read the authorization headers.
+2. Authenticate the user within the context function.
+3. Once the user is authenticated, attach the user to the object returned from the context function. This allows us to read the user's information from within our data sources and resolvers, so we can authorize whether they can access the data.
