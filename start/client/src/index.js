@@ -1,6 +1,7 @@
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
+import gql from "graphql-tag";
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
@@ -11,3 +12,19 @@ const client = new ApolloClient({
   cache,
   link
 });
+
+// Make your first query
+client
+  .query({
+    query: gql`
+      query GetLaunch {
+        launch(id: 56) {
+          id
+          mission {
+            name
+          }
+        }
+      }
+    `
+  })
+  .then(result => console.log(result));
