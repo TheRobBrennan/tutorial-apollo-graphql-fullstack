@@ -23,4 +23,8 @@ $ npm install apollo-datasource-rest --save
 # To build a data source for a REST API, extend the RESTDataSource class and define this.baseURL
 # The Apollo RESTDataSource also sets up an in-memory cache that caches responses from our REST resources with no additional setup using partial query caching
 
+# Our REST API is read-only, so we need to connect our graph API to a database for saving and fetching user data.
+# Navigate to start/server/src/datasources/user.js to see how our UserAPI data source has been created.
+# Connect our REST API and SQL database to our server at start/server/src/index.js
+
 ```
