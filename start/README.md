@@ -241,3 +241,63 @@ Let's call `useApolloClient` to get the currently configured client instance. Ne
 In our `onCompleted` handler, we also call `client.writeData` to write local data to the Apollo cache indicating that the user is logged in. This is an example of a direct write that we'll explore further in the next section on local state management.
 
 Let's take a look at `start/client/src/pages/login.js`
+
+## 8. Manage local state
+
+In almost every app we build, we display a combination of remote data from our graph API and local data such as network status, form state, and more. What's awesome about Apollo Client is that it allows us to store local data inside the Apollo cache and query it alongside our remote data with GraphQL.
+
+We recommend managing local state in the Apollo cache instead of bringing in another state management library like Redux so the Apollo cache can be a single source of truth.
+
+Managing local data with Apollo Client is very similar to how you've already managed remote data in this tutorial. You'll write a client schema and resolvers for your local data. You'll also learn to query it with GraphQL just by specifying the @client directive. Let's dive in!
+
+### Write a local schema
+
+Just like how a schema is the first step toward defining our data model on the server, writing a local schema is the first step we take on the client.
+
+Refer to `src/resolvers.js` - to build a client schema, we extend the types of our server schema and wrap it with the gql function. Using the extend keyword allows us to combine both schemas inside developer tooling like Apollo VSCode and Apollo DevTools.
+
+We can also add local fields to server data by extending types from our server. Here, we're adding the `isInCart` local field to the `Launch` type we receive back from our graph API.
+
+### Initialize the store
+
+Now that we've created our client schema, let's learn how to initialize the store. Since queries execute as soon as the component mounts, it's important for us to warm the Apollo cache with some default state so those queries don't error out. We will need to write initial data to the cache for both `isLoggedIn` and `cartItems`
+
+Jump back to `src/index.js` and notice we had already added a `cache.writeData` call to prepare the cache in the last section. While we're here, make sure to also import the `typeDefs` and `resolvers` that we just created so we can use them later.
+
+### Query local data
+
+Querying local data from the Apollo cache is almost the same as querying remote data from a graph API. The only difference is that you add a @client directive to a local field to tell Apollo Client to pull it from the cache.
+
+Refer to `start/client/src/index.js` - Let's look at an example where we query the `isLoggedIn` field we wrote to the cache in the last mutation exercise. 
+
+First, we create our IsUserLoggedIn local query by adding the @client directive to the isLoggedIn field. Then, we render a component with useQuery, pass our local query in, and based on the response render either a login screen or the homepage depending if the user is logged in. Since cache reads are synchronous, we don't have to account for any loading state.
+
+Let's look at another example of a component that queries local state in `src/pages/cart.js`.
+
+### Adding virtual fields to server data
+
+One of the unique advantages of managing your local data with Apollo Client is that you can add virtual fields to data you receive back from your graph API. These fields only exist on the client and are useful for decorating server data with local state. In our example, we're going to add an `isInCart` virtual field to our `Launch` type.
+
+To add a virtual field, first extend the type of the data you're adding the field to in your client schema - as in `start/client/src/resolvers.js` - and then specify a client resolver on the Launch type to tell Apollo Client how to resolve your virtual field.
+
+### Update local data
+
+Up until now, we've focused on querying local data from the Apollo cache. Apollo Client also lets you update local data in the cache with either direct cache writes or client resolvers. Direct writes are typically used to write simple booleans or strings to the cache whereas client resolvers are for more complicated writes such as adding or removing data from a list.
+
+#### Direct cache writes
+
+Direct cache writes are convenient when you want to write a simple field, like a boolean or a string, to the Apollo cache. We perform a direct write by calling `client.writeData()` and passing in an object with a data property that corresponds to the data we want to write to the cache. We've already seen an example of a direct write, when we called `client.writeData` in the `onCompleted` handler for the login `useMutation` based component.
+
+Refer to `start/client/src/containers/logout-button.js` - Let's look at a similar example, where we copy the code below to create a logout button.
+
+When we click the button, we perform a direct cache write by calling `client.writeData` and passing in a data object that sets the `isLoggedIn` boolean to `false`.
+
+Refer to `start/client/src/containers/book-trips.js` - we can also perform direct writes within the `update` function of the `useMutation` hook. The `update` function allows us to manually update the cache after a mutation occurs without refetching data.
+
+#### Local resolvers
+
+We're not done yet! What if we wanted to perform a more complicated local data update such as adding or removing items from a list? For this situation, we'll use a local resolver. Local resolvers have the same function signature as remote resolvers `((parent, args, context, info) => data)`. The only difference is that the Apollo cache is already added to the context for you. Inside your resolver, you'll use the cache to read and write data.
+
+Refer to `start/client/src/resolvers.js` - Let's write the local resolver for the `addOrRemoveFromCart` mutation. You should place this resolver underneath the Launch resolver we wrote earlier. In this resolver, we destructure the Apollo cache from the context in order to read the query that fetches cart items. Once we have our cart data, we either remove or add the cart item's id passed into the mutation to the list. Finally, we return the updated list from the mutation.
+
+Refer to `start/client/src/containers/action-button.js` - Let's see how we call the `addOrRemoveFromCart` mutation in a component.
