@@ -203,3 +203,19 @@ Why are we wrapping our GraphQL query with `gql`? We need to wrap the query with
 Refer to `start/client/src/pages/launches.js` - notice how our `GET_LAUNCHES` query is defined. It contains both `cursor` and `hasMore` properties - as well as an object type with a list of launches.
 
 At this stage of our tutorial, note that we are only fetching the first twenty (20) launches from the list. To display the full list of launches, we need to build a pagination feature.
+
+### Build a paginated list
+
+Refer to `start/client/src/pages/launches.js` - Apollo Client has built-in helpers to make adding pagination to our app much easier than it would be if we were writing the logic ourselves.
+
+To build a paginated list with Apollo, we first need to destructure the `fetchMore` function from the `useQuery` result object.
+
+Let's navigate to `src/pages/launch.js` to build out our detail page. Let's render a component with `useQuery` to execute it. This time, we'll also need to pass in the `launchId` as a variable to the query, which we'll do by adding a `variables` option to `useQuery`. The `launchId` comes through as a prop from the router.
+
+### Customizing the fetch policy
+
+Sometimes, it's useful to tell Apollo Client to bypass the cache altogether if you have some data that constantly needs to be refreshed. We can do this by customizing the useQuery hook's fetchPolicy.
+
+First, let's navigate to `src/pages/profile.js` and write our query.
+
+By default, Apollo Client's fetch policy is `cache-first`, which means it checks the cache to see if the result is there before making a network request. Since we want this list to always reflect the newest data from our graph API, we set the `fetchPolicy` for this `query` to `network-only`.
