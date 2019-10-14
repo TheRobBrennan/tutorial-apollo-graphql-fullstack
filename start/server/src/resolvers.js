@@ -58,4 +58,28 @@ module.exports = {
         : mission.missionPatchLarge;
     },
   },
+
+  /**
+   * Now that we know how to add resolvers on types other than Query and Mission, let's add some more resolvers to the Launch and User types.
+   */
+  Launch: {
+    isBooked: async (launch, _, { dataSources }) =>
+      dataSources.userAPI.isBookedOnLaunch({ launchId: launch.id }),
+  },
+
+  User: {
+    trips: async (_, __, { dataSources }) => {
+      // get ids of launches by user
+      const launchIds = await dataSources.userAPI.getLaunchIdsByUser();
+
+      if (!launchIds.length) return [];
+
+      // look up those launches by their ids
+      return (
+        dataSources.launchAPI.getLaunchesByIds({
+          launchIds,
+        }) || []
+      );
+    },
+  },
 };
