@@ -293,3 +293,11 @@ Refer to `start/client/src/containers/logout-button.js` - Let's look at a simila
 When we click the button, we perform a direct cache write by calling `client.writeData` and passing in a data object that sets the `isLoggedIn` boolean to `false`.
 
 Refer to `start/client/src/containers/book-trips.js` - we can also perform direct writes within the `update` function of the `useMutation` hook. The `update` function allows us to manually update the cache after a mutation occurs without refetching data.
+
+#### Local resolvers
+
+We're not done yet! What if we wanted to perform a more complicated local data update such as adding or removing items from a list? For this situation, we'll use a local resolver. Local resolvers have the same function signature as remote resolvers `((parent, args, context, info) => data)`. The only difference is that the Apollo cache is already added to the context for you. Inside your resolver, you'll use the cache to read and write data.
+
+Refer to `start/client/src/resolvers.js` - Let's write the local resolver for the `addOrRemoveFromCart` mutation. You should place this resolver underneath the Launch resolver we wrote earlier. In this resolver, we destructure the Apollo cache from the context in order to read the query that fetches cart items. Once we have our cart data, we either remove or add the cart item's id passed into the mutation to the list. Finally, we return the updated list from the mutation.
+
+Refer to `start/client/src/containers/action-button.js` - Let's see how we call the `addOrRemoveFromCart` mutation in a component.
