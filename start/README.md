@@ -175,3 +175,19 @@ Publishing your schema to Apollo Graph Manager unlocks many features necessary f
 + Performance analytics: Fine-grained insights into every field, resolvers and operations of your graph's execution
 
 + Client awareness: Report client identity (name and version) to your server for insights on client activity.
+
+## 5. Connect your API to a client
+
+Please refer to `start/client/src/index.js` to see this in action.
+
+IMPORTANT: This tutorial assumes that you will have your back-end GraphQL Apollo server up and running - and you have completed the first four (4) steps as discussed above.
+
+### Apollo VSCode
+
+If you are using Apollo VSCode, please be sure to make a copy of the `.env.example` file located in client/ and call it `.env` - updating it with the Graph Manager API key you already created in step four (4) above.
+
+Next, create an Apollo config file called `apollo.config.js` - this config file is how you configure both the Apollo VSCode extension and CLI.
+
+### Create an Apollo Client
+
+### Connect your client to React
