@@ -279,3 +279,17 @@ Let's look at another example of a component that queries local state in `src/pa
 One of the unique advantages of managing your local data with Apollo Client is that you can add virtual fields to data you receive back from your graph API. These fields only exist on the client and are useful for decorating server data with local state. In our example, we're going to add an `isInCart` virtual field to our `Launch` type.
 
 To add a virtual field, first extend the type of the data you're adding the field to in your client schema - as in `start/client/src/resolvers.js` - and then specify a client resolver on the Launch type to tell Apollo Client how to resolve your virtual field.
+
+### Update local data
+
+Up until now, we've focused on querying local data from the Apollo cache. Apollo Client also lets you update local data in the cache with either direct cache writes or client resolvers. Direct writes are typically used to write simple booleans or strings to the cache whereas client resolvers are for more complicated writes such as adding or removing data from a list.
+
+#### Direct cache writes
+
+Direct cache writes are convenient when you want to write a simple field, like a boolean or a string, to the Apollo cache. We perform a direct write by calling `client.writeData()` and passing in an object with a data property that corresponds to the data we want to write to the cache. We've already seen an example of a direct write, when we called `client.writeData` in the `onCompleted` handler for the login `useMutation` based component.
+
+Refer to `start/client/src/containers/logout-button.js` - Let's look at a similar example, where we copy the code below to create a logout button.
+
+When we click the button, we perform a direct cache write by calling `client.writeData` and passing in a data object that sets the `isLoggedIn` boolean to `false`.
+
+Refer to `start/client/src/containers/book-trips.js` - we can also perform direct writes within the `update` function of the `useMutation` hook. The `update` function allows us to manually update the cache after a mutation occurs without refetching data.
