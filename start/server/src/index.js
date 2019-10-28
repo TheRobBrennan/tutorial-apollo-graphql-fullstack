@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./schema');
 const { createStore } = require('./utils');
@@ -49,7 +50,12 @@ const server = new ApolloServer({
     */
     userAPI: new UserAPI({ store })
 
-  })
+  }),
+
+  engine: {
+    apiKey: process.env.ENGINE_API_KEY,
+  },
+
 });
 
 server.listen().then(({ url }) => {
